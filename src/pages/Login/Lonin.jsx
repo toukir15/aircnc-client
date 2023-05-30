@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { FcGoogle } from "react-icons/fc";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import { TbFidgetSpinner } from "react-icons/tb";
 import { toast } from "react-hot-toast";
@@ -9,6 +9,10 @@ import { toast } from "react-hot-toast";
 const Login = () => {
   const { loading, setLoading, signIn, signInWithGoogle, resetPassword } =
     useContext(AuthContext);
+  const emailRef = useRef();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from?.pathname || "/";
 
   // sign in with email and password
   const handleSingIn = (event) => {
@@ -19,8 +23,12 @@ const Login = () => {
     signIn(email, password)
       .then((result) => {
         const loggedUser = result.user;
+        navigate(from, { replace: true });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        toast.error(error.message);
+        setLoading(false);
+      });
   };
 
   // sing in with google
@@ -29,9 +37,9 @@ const Login = () => {
       .then((result) => {
         const loggedUser = result.user;
         console.log(loggedUser);
+        navigate(from, { replace: true });
       })
       .catch((error) => {
-        console.log(error.message);
         toast.error(error.message);
         setLoading(false);
       });
@@ -39,14 +47,12 @@ const Login = () => {
 
   // handle forget password
   const handleForgetPassword = (event) => {
-    event.preventDefault();
-    const email = event.target.email.value;
+    const email = emailRef.current.value;
     resetPassword(email)
       .then(() => {
-        toast.success("Check your email for reset password!!");
+        toast.success("check your email");
       })
-      .catch(() => {
-        console.log(error.message);
+      .catch((error) => {
         toast.error(error.message);
         setLoading(false);
       });
@@ -62,6 +68,7 @@ const Login = () => {
           </p>
         </div>
         <form
+          onSubmit={handleSingIn || handleForgetPassword}
           noValidate=""
           action=""
           className="space-y-6 ng-untouched ng-pristine ng-valid"
@@ -72,6 +79,7 @@ const Login = () => {
                 Email address
               </label>
               <input
+                ref={emailRef}
                 type="email"
                 name="email"
                 id="email"
@@ -100,7 +108,6 @@ const Login = () => {
 
           <div>
             <button
-              onClick={handleSingIn}
               type="submit"
               className="bg-rose-500 w-full rounded-md py-3 text-white"
             >
