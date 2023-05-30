@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 export default function Logo() {
   return (
-    <div>
+    <div className="flex items-center">
       <Link to={"/"}>
         <img
           className="hidden md:block"

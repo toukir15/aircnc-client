@@ -1,4 +1,6 @@
 import Container from "../Container";
+import Menu from "./Menu";
+import Search from "./Search";
 import Logo from "./logo";
 
 export default function Navbar() {
@@ -8,8 +10,8 @@ export default function Navbar() {
         <Container>
           <div className="flex flex-row item-center justify-between gap-3 md:gap-0">
             <Logo />
-            <div>Search</div>
-            <div>Menu</div>
+            <Search />
+            <Menu />
           </div>
         </Container>
       </div>
